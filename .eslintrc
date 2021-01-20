@@ -1,0 +1,7 @@
+{
+    "extends": ["plugin:cypress/recommended", "prettier"],
+    "plugins": ["prettier"],
+    "rules": {
+        "prettier/prettier": ["error"]
+    }
+}
