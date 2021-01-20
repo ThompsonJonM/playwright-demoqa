@@ -74,7 +74,7 @@ const buttonTuple = [
 buttonTuple.forEach(async ($type) => {
   const [clickType, messageSelector] = $type;
 
-  it.only(`As a user, I should be able to ${clickType} an element`, async () => {
+  it(`As a user, I should be able to ${clickType} an element`, async () => {
     await page.goto('https://www.demoqa.com/buttons');
 
     if (clickType === 'Double Click') {
