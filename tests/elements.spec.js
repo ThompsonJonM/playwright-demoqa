@@ -15,7 +15,7 @@ afterAll(async () => {
 describe('Base Tests', () => {
   it('As a user, I should be able to visit the Elements page', async () => {
     await page.goto(`${baseUrl}/elements`);
-    const headerText = await page.$eval('.main-header', (el) => el.innerText);
+    const headerText = await page.innerText('.main-header');
 
     expect(headerText).toContain('Elements');
   });
@@ -24,7 +24,8 @@ describe('Base Tests', () => {
     await page.goto(`${baseUrl}/elements`);
     const elementGroupHandle = await page.waitForSelector('.element-group');
     await page.click('.header-right');
-    const elementListClass = await elementGroupHandle.$eval('.element-list', (el) => el.className);
+    const elementList = await elementGroupHandle.$('.element-list');
+    const elementListClass = await elementList.getAttribute('class');
     expect(elementListClass).not.toContain('show');
   });
 });
@@ -54,7 +55,7 @@ describe('Text Box Tests', () => {
 
     const output = await page.$('#output');
     for (const [key, value] of Object.entries(user)) {
-      const eleValue = await output.$eval(`#${key}`, (el) => el.innerText);
+      const eleValue = await output.innerText(`#${key}`);
       expect(eleValue).toContain(value);
     }
   });
@@ -65,7 +66,7 @@ describe('Text Box Tests', () => {
     const userEmailField = await userForm.$('#userEmail');
     await userEmailField.fill('test');
     await page.click('#submit');
-    const emailClass = await userForm.$eval('#userEmail', (el) => el.className);
+    const emailClass = await userEmailField.getAttribute('class');
     expect(emailClass).toContain('field-error');
   });
 });
