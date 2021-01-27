@@ -90,9 +90,9 @@ describe('Buttons Tests', () => {
       } else {
         await page.click('button >> text="Click Me"');
       }
-      const messageHandle = await page.$(`#${messageSelector}`);
+      const messageHandle = await page.isVisible(`#${messageSelector}`);
 
-      expect(!!messageHandle).toBe(true);
+      expect(messageHandle).toBeTruthy();
     });
   });
 });
