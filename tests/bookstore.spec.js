@@ -1,5 +1,6 @@
 const { chromium } = require('playwright');
 const requestify = require('requestify');
+const bookstoreUser = require('../user.json');
 
 let browser, context, page;
 const baseUrl = 'https://www.demoqa.com';
@@ -12,8 +13,8 @@ beforeEach(async () => {
     .request(`${baseUrl}/Account/v1/Login`, {
       method: 'POST',
       body: {
-        userName: 'test.user123',
-        password: 'Test1234!',
+        userName: bookstoreUser.username,
+        password: bookstoreUser.password,
       },
     })
     .then(async (response) => {
@@ -29,8 +30,6 @@ beforeEach(async () => {
         { name: 'userID', value: userID, path: '/', domain: 'www.demoqa.com' },
         { name: 'expires', value: expires, path: '/', domain: 'www.demoqa.com' },
       ]);
-
-      console.log(await context.cookies());
     });
 
   page = await context.newPage();
