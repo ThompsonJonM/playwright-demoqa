@@ -6,7 +6,7 @@ let browser, context, page;
 const baseUrl = 'https://www.demoqa.com';
 
 beforeEach(async () => {
-  browser = await chromium.launch({ headless: false });
+  browser = await chromium.launch();
   context = await browser.newContext();
 
   requestify
