@@ -1,27 +1,39 @@
 const { chromium } = require('playwright');
+const requestify = require('requestify');
 
 let browser, context, page;
 const baseUrl = 'https://www.demoqa.com';
 
-beforeAll(async () => {
-  browser = await chromium.launch();
+beforeEach(async () => {
+  browser = await chromium.launch({ headless: false });
   context = await browser.newContext();
 
+  requestify
+    .request(`${baseUrl}/Account/v1/Login`, {
+      method: 'POST',
+      body: {
+        userName: 'test.user123',
+        password: 'Test1234!',
+      },
+    })
+    .then(async (response) => {
+      const body = response.getBody();
+      const token = body.token;
+      const userName = body.username;
+      const userID = body.userId;
+      const expires = body.expires;
+
+      await context.addCookies([
+        { name: 'token', value: token, path: '/', domain: 'www.demoqa.com' },
+        { name: 'userName', value: userName, path: '/', domain: 'www.demoqa.com' },
+        { name: 'userID', value: userID, path: '/', domain: 'www.demoqa.com' },
+        { name: 'expires', value: expires, path: '/', domain: 'www.demoqa.com' },
+      ]);
+
+      console.log(await context.cookies());
+    });
+
   page = await context.newPage();
-
-  await page.goto(`${baseUrl}/login`);
-  await page.fill('#userName', 'test.user123');
-  await page.fill('#password', 'Test1234!');
-
-  await page.click('#login >> text="Login"');
-
-  const storage = await context.storageState();
-  process.env.STORAGE = JSON.stringify(storage);
-});
-
-beforeEach(async () => {
-  const storageState = JSON.parse(process.env.STORAGE);
-  context = await browser.newContext({ storageState });
 });
 
 afterAll(async () => {
@@ -39,7 +51,7 @@ describe('Add Books Tests', () => {
   it('As a user, I should be able to view a single book', async () => {
     await page.route('**/BookStore/v1/Books', (route) =>
       route.fulfill({
-        path: './data/books.json'
+        path: './data/books.json',
       }),
     );
     await page.goto(`${baseUrl}/books`);
