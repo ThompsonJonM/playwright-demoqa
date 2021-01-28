@@ -4,7 +4,7 @@ let browser, context, page;
 const baseUrl = 'https://www.demoqa.com';
 
 beforeAll(async () => {
-  browser = await chromium.launch();
+  browser = await chromium.launch({ headless: false, devtools: true });
   context = await browser.newContext();
 
   page = await context.newPage();
@@ -34,5 +34,17 @@ describe('Add Books Tests', () => {
     const profileHandle = await page.isVisible('.profile-wrapper');
 
     expect(profileHandle).toBeTruthy();
+  });
+
+  it('As a user, I should be able to view a single book', async () => {
+    await page.route('**/BookStore/v1/Books', (route) =>
+      route.fulfill({
+        path: './data/books.json'
+      }),
+    );
+    await page.goto(`${baseUrl}/books`);
+
+    const book = await page.isVisible('a >> text="Designing Evolvable Web APIs with ASP.NET"');
+    expect(book).toBeTruthy();
   });
 });
