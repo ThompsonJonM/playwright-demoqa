@@ -4,7 +4,7 @@ let browser, context, page;
 const baseUrl = 'https://www.demoqa.com';
 
 beforeAll(async () => {
-  browser = await chromium.launch({ headless: false, devtools: true });
+  browser = await chromium.launch();
   context = await browser.newContext();
 
   page = await context.newPage();
