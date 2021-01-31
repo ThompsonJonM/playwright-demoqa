@@ -1,3 +1,4 @@
+const { TextBoxPage } = require('../pages/textBox');
 const { chromium } = require('playwright');
 
 let browser, page;
@@ -39,17 +40,10 @@ describe('Text Box Tests', () => {
   };
 
   it('As a user, I should be able to submit valid data', async () => {
-    await page.goto(`${baseUrl}/text-box`);
-    const userForm = await page.waitForSelector('#userForm');
-    const usernameField = await userForm.$('#userName');
-    const userEmailField = await userForm.$('#userEmail');
-    const userCurrentAddressField = await userForm.$('#currentAddress');
-    const userPermanentAddressField = await userForm.$('#permanentAddress');
+    const textBoxPage = new TextBoxPage(page);
+    textBoxPage.navigate();
 
-    await usernameField.fill(user.name);
-    await userEmailField.fill(user.email);
-    await userCurrentAddressField.fill(user.currentAddress);
-    await userPermanentAddressField.fill(user.permanentAddress);
+    textBoxPage.fillForm(user);
 
     await page.click('#submit');
 
